@@ -63,7 +63,7 @@ def build_spectrogram_animation(filename, fft_size, x_range=None, y_range=None):
 	# Création de la courbe qui va dessiner la FFT.
 	line = graph.plot([], [])[0]
 
-	refresh_period_ms = 1000 / (fps / fft_size)
+	refresh_period_ms = 1000 / (SAMPLING_FREQ / fft_size)
 	return fig, anim.FuncAnimation(fig, draw_frame, fargs=(fig, graph, line, spec), interval=refresh_period_ms)
 
 def wait_and_play(filename):
@@ -100,10 +100,18 @@ def main():
 	save_wav(arpeggio, "output/major_chord_arpeggio.wav", 1, SAMPLING_FREQ)
 
 	# TODO: Afficher la FFT de `block_chord` dans une fenêtre.
-	
+	mag,freq = apply_fft(block_chord, SAMPLING_FREQ)
+	xs, ys = freq, mag
+	plt.plot(xs,ys)
+	plt.show()
 	# TODO: Pour chaque note générée précédemment (dans `notes`), afficher sa FFT. On veut ici les afficher indépendamment, mais sur le même graphique.
-	
+	for note in notes:
+		mag, freq = apply_fft(note, SAMPLING_FREQ)
+		xs, ys = freq, mag
+		plt.plot(xs, ys)
 
+	plt.show()
+	return
 	wav_filename = "data/stravinsky.wav"
 
 	# Création de l'animation. On contraint ici nos axes pour visionner le domaine intéressant des données.
